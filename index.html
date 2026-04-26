@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LeaveDesk — Online Leave Management</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<!-- LOGIN PAGE -->
+<div id="loginPage">
+  <div class="login-shell">
+    <div class="login-left">
+      <div class="login-brand">Leave<em>Desk</em><br>Management</div>
+      <div class="login-tagline">A modern, streamlined system for submitting and tracking employee and student leave requests.</div>
+      <div class="login-pills">
+        <div class="pill">Easy Submission</div>
+        <div class="pill">Real-time Status</div>
+        <div class="pill">Admin Control</div>
+        <div class="pill">Instant Decisions</div>
+      </div>
+    </div>
+    <div class="login-right">
+      <div class="login-card">
+        <h2 id="loginHeading">Welcome</h2>
+        <div class="hint">Sign in to access your leave dashboard</div>
+        <div class="field">
+          <label>Username</label>
+          <div class="field-icon">
+            <input type="text" id="loginUser" placeholder="Enter your username" autocomplete="off">
+          </div>
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <div class="field-icon">
+            <input type="password" id="loginPass" placeholder="Enter your password">
+          </div>
+        </div>
+        <div class="err-text" id="loginErr">Please enter both username and password.</div>
+        <div style="height:16px"></div>
+        <button class="btn btn-primary btn-full" onclick="userLogin()">Sign In &rarr;</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- APP SHELL -->
+<div id="appShell" style="display:none">
+  <button class="mob-toggle" onclick="toggleSidebar()">&#9776;</button>
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="mark">Leave<span>Desk</span></div>
+      <div class="sub">Management System</div>
+    </div>
+    <div class="sidebar-user">
+      <div class="avatar" id="sideAvatar">?</div>
+      <div class="uname" id="sideName">—</div>
+      <div class="urole">Employee / Student</div>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-label">Menu</div>
+      <div class="nav-item active" id="nav-dashboard" onclick="switchView('dashboard')">
+        <span class="icon"></span> Dashboard
+      </div>
+      <div class="nav-item" id="nav-apply" onclick="switchView('apply')">
+        Apply for Leave
+      </div>
+      <div class="nav-item" id="nav-notif" onclick="openNotifModal()">
+        Notifications
+        <span class="notif-badge" id="notifBadge">0</span>
+      </div>
+      <div class="nav-label">Admin</div>
+      <div class="nav-item" id="nav-admin" onclick="openAdminLogin()">
+        Admin Panel
+      </div>
+    </div>
+    <div class="nav-bottom">
+      <div class="logout-item" onclick="logout()">Sign Out</div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-title" id="topbarTitle">Dashboard <span id="topbarSub">Overview of your leave activity</span></div>
+      <div class="topbar-date" id="topbarDate"></div>
+    </div>
+    <div class="content">
+
+      <!-- DASHBOARD VIEW -->
+      <div class="view active" id="view-dashboard">
+        <div class="stats-row">
+          <div class="stat-card green"><div class="stat-icon"></div><div class="stat-num" id="statApproved">0</div><div class="stat-label">Approved</div></div>
+          <div class="stat-card amber"><div class="stat-icon"></div><div class="stat-num" id="statPending">0</div><div class="stat-label">Pending Review</div></div>
+          <div class="stat-card red"><div class="stat-icon"></div><div class="stat-num" id="statRejected">0</div><div class="stat-label">Rejected</div></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">Your Applications</div><div class="card-sub">All requests submitted this session</div></div>
+            <button class="btn btn-primary btn-sm" onclick="switchView('apply')">+ New Request</button>
+          </div>
+          <div id="dashboardTable"></div>
+        </div>
+      </div>
+
+      <!-- APPLY VIEW -->
+      <div class="view" id="view-apply">
+        <div class="card" style="max-width:640px">
+          <div class="card-head">
+            <div><div class="card-title">New Leave Request</div><div class="card-sub">Fill in all fields carefully before submitting</div></div>
+          </div>
+          <div class="info-box" id="submitHint">
+            Application submitted! Click <b>Check My Status</b> in the sidebar to track it.
+          </div>
+          <form id="leaveForm" onsubmit="submitLeave(event)">
+            <div class="grid-2">
+              <div class="field"><label>Full Name</label><input type="text" id="fName" placeholder="Sara Ahmed" required></div>
+              <div class="field"><label>Your ID</label><input type="text" id="fId" placeholder="S0123" required></div>
+            </div>
+            <div class="field"><label>Email Address</label><input type="email" id="fEmail" placeholder="your.email@example.com" required></div>
+            <div class="field">
+              <label>Leave Type</label>
+              <select id="fLeaveType" required>
+                <option value="">— Select a leave type —</option>
+                <option value="Sick Leave">Sick Leave</option>
+                <option value="Vacation">Vacation</option>
+                <option value="Personal">Personal Leave</option>
+                <option value="Emergency">Emergency</option>
+                <option value="Academic">Academic / Exam</option>
+              </select>
+            </div>
+            <div class="grid-2">
+              <div class="field"><label>Start Date</label><input type="date" id="fStart" required></div>
+              <div class="field"><label>End Date</label><input type="date" id="fEnd" required></div>
+            </div>
+            <div class="field"><label>Reason / Details</label><textarea id="fReason" placeholder="Briefly explain the reason for your leave request..." required></textarea></div>
+            <div class="divider"></div>
+            <div style="display:flex;gap:12px">
+              <button type="submit" class="btn btn-primary">Submit Request &rarr;</button>
+              <button type="button" class="btn btn-ghost" onclick="document.getElementById('leaveForm').reset()">Clear Form</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- ADMIN VIEW -->
+      <div class="view" id="view-admin">
+        <div class="stats-row">
+          <div class="stat-card green"><div class="stat-icon"></div><div class="stat-num" id="aStatApproved">0</div><div class="stat-label">Approved</div></div>
+          <div class="stat-card amber"><div class="stat-icon"></div><div class="stat-num" id="aStatPending">0</div><div class="stat-label">Pending</div></div>
+          <div class="stat-card red"><div class="stat-icon"></div><div class="stat-num" id="aStatRejected">0</div><div class="stat-label">Rejected</div></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">All Leave Applications</div><div class="card-sub">Review and action submitted requests</div></div>
+            <button class="btn btn-ghost btn-sm" onclick="switchView('dashboard')">&larr; Exit Panel</button>
+          </div>
+          <div id="adminTableWrap"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: ADMIN LOGIN -->
+<div class="modal-bg" id="adminLoginModal">
+  <div class="modal">
+    <h3>Admin Login</h3>
+    <div class="modal-sub">Enter admin credentials to access the management panel</div>
+
+    <!-- CREDENTIALS HINT BOX -->
+    <div style="background:#f0f9f4;border:1px solid #a5d6a7;border-radius:8px;padding:10px 14px;margin-bottom:16px;">
+      <div style="font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#7c8095;margin-bottom:6px;">Demo Credentials</div>
+      <div style="display:flex;gap:24px;font-size:13px;color:#1b5e20;">
+        <div>Username: <b style="color:#0f1117;">admin</b></div>
+        <div>Password: <b style="color:#0f1117;">admin123</b></div>
+      </div>
+    </div>
+
+    <div class="field"><label>Username</label><input type="text" id="adminUser" placeholder="Username" autocomplete="off"></div>
+    <div class="field"><label>Password</label><input type="password" id="adminPass" placeholder="Password"></div>
+    <div class="err-text" id="adminErr">Incorrect credentials. Please try again.</div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeAdminLogin()">Cancel</button>
+      <button class="btn btn-primary" onclick="adminLogin()">Login &rarr;</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: NOTIFICATIONS -->
+<div class="modal-bg" id="notifModal">
+  <div class="modal" style="max-width:500px">
+    <h3>Notifications</h3>
+    <div class="modal-sub">Updates from admin on your leave requests</div>
+    <div id="notifList"></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost btn-sm" onclick="clearAllNotifs()">Clear All</button>
+      <button class="btn btn-ghost" onclick="closeNotifModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script src="leave.js"></script>
+</body>
+</html>
