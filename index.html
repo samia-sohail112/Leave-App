@@ -8,39 +8,49 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
 <!-- LOGIN PAGE -->
 <div id="loginPage">
-  <div class="login-shell">
-    <div class="login-left">
-      <div class="login-brand">Leave<em>Desk</em><br>Management</div>
-      <div class="login-tagline">A modern, streamlined system for submitting and tracking employee and student leave requests.</div>
-      <div class="login-pills">
-        <div class="pill">Easy Submission</div>
-        <div class="pill">Real-time Status</div>
-        <div class="pill">Admin Control</div>
-        <div class="pill">Instant Decisions</div>
-      </div>
+  <!-- HEADER WITH BACKGROUND IMAGE -->
+  <div class="login-header">
+    <div class="header-content">
+      <div class="login-brand">Leave<em>Desk</em></div>
+      <div class="login-tagline">A modern leave management system for employees and students</div>
     </div>
-    <div class="login-right">
-      <div class="login-card">
-        <h2 id="loginHeading">Welcome</h2>
-        <div class="hint">Sign in to access your leave dashboard</div>
-        <div class="field">
-          <label>Username</label>
-          <div class="field-icon">
-            <input type="text" id="loginUser" placeholder="Enter your username" autocomplete="off">
-          </div>
+  </div>
+
+  <!-- LOGIN FORM -->
+  <div class="login-form-container">
+    <div class="login-card">
+      <h2 id="loginHeading">Welcome</h2>
+      <div class="hint">Sign in to access your leave dashboard</div>
+      <div class="field">
+        <label>Username</label>
+        <div class="field-icon">
+          <input type="text" id="loginUser" placeholder="Enter your username" autocomplete="off">
         </div>
-        <div class="field">
-          <label>Password</label>
-          <div class="field-icon">
-            <input type="password" id="loginPass" placeholder="Enter your password">
-          </div>
-        </div>
-        <div class="err-text" id="loginErr">Please enter both username and password.</div>
-        <div style="height:16px"></div>
-        <button class="btn btn-primary btn-full" onclick="userLogin()">Sign In &rarr;</button>
       </div>
+      <div class="field">
+        <label>Password</label>
+        <div class="field-icon">
+          <input type="password" id="loginPass" placeholder="Enter your password">
+        </div>
+      </div>
+      <div class="err-text" id="loginErr">Please enter both username and password.</div>
+      <div style="height:16px"></div>
+      <button class="btn btn-primary btn-full" onclick="userLogin()">Sign In</button>
+      <div style="text-align:center;margin-top:14px;font-size:13px">New user? <a href="#" onclick="showSignup();return false">Create account</a></div>
+    </div>
+    <div class="login-card" id="signupCard" style="display:none">
+      <h2>Create Account</h2>
+      <div class="hint">Sign up once, then sign in anytime</div>
+      <div class="field"><label>Username</label><input type="text" id="signUser" placeholder="Choose a username" autocomplete="off"></div>
+      <div class="field"><label>Password</label><input type="password" id="signPass" placeholder="Choose a password"></div>
+      <div class="field"><label>Confirm Password</label><input type="password" id="signPass2" placeholder="Repeat your password"></div>
+      <div class="err-text" id="signupErr"></div>
+      <div style="height:16px"></div>
+      <button class="btn btn-primary btn-full" onclick="userSignup()">Sign Up</button>
+      <div style="text-align:center;margin-top:14px;font-size:13px">Already have an account? <a href="#" onclick="showLogin();return false">Sign in</a></div>
     </div>
   </div>
 </div>
@@ -63,38 +73,46 @@
     <div class="sidebar-nav">
       <div class="nav-label">Menu</div>
       <div class="nav-item active" id="nav-dashboard" onclick="switchView('dashboard')">
-        <span class="icon"></span> Dashboard
+        <span class="icon">D</span> Dashboard
       </div>
       <div class="nav-item" id="nav-apply" onclick="switchView('apply')">
-        Apply for Leave
+        <span class="icon">A</span> Apply for Leave
       </div>
       <div class="nav-item" id="nav-notif" onclick="openNotifModal()">
-        Notifications
+        <span class="icon">N</span> Notifications
         <span class="notif-badge" id="notifBadge">0</span>
+      </div>
+      <div class="nav-item" id="nav-policy" onclick="switchView('policy')">
+        <span class="icon">P</span> Leave Policy
       </div>
       <div class="nav-label">Admin</div>
       <div class="nav-item" id="nav-admin" onclick="openAdminLogin()">
-        Admin Panel
+        <span class="icon">S</span> Admin Panel
       </div>
     </div>
     <div class="nav-bottom">
-      <div class="logout-item" onclick="logout()">Sign Out</div>
+      <div class="logout-item" onclick="logout()"><span>L</span> Sign Out</div>
     </div>
   </aside>
 
   <div class="main">
     <div class="topbar">
       <div class="topbar-title" id="topbarTitle">Dashboard <span id="topbarSub">Overview of your leave activity</span></div>
-      <div class="topbar-date" id="topbarDate"></div>
+      <div class="topbar-actions">
+        <button class="theme-toggle" id="themeToggle" onclick="toggleDarkMode()" title="Toggle Dark Mode">
+          <span class="theme-icon" id="themeIcon">☀</span>
+        </button>
+        <div class="topbar-date" id="topbarDate"></div>
+      </div>
     </div>
     <div class="content">
 
       <!-- DASHBOARD VIEW -->
       <div class="view active" id="view-dashboard">
         <div class="stats-row">
-          <div class="stat-card green"><div class="stat-icon"></div><div class="stat-num" id="statApproved">0</div><div class="stat-label">Approved</div></div>
-          <div class="stat-card amber"><div class="stat-icon"></div><div class="stat-num" id="statPending">0</div><div class="stat-label">Pending Review</div></div>
-          <div class="stat-card red"><div class="stat-icon"></div><div class="stat-num" id="statRejected">0</div><div class="stat-label">Rejected</div></div>
+          <div class="stat-card green"><div class="stat-icon">A</div><div class="stat-num" id="statApproved">0</div><div class="stat-label">Approved</div></div>
+          <div class="stat-card amber"><div class="stat-icon">P</div><div class="stat-num" id="statPending">0</div><div class="stat-label">Pending Review</div></div>
+          <div class="stat-card red"><div class="stat-icon">R</div><div class="stat-num" id="statRejected">0</div><div class="stat-label">Rejected</div></div>
         </div>
         <div class="card">
           <div class="card-head">
@@ -105,19 +123,71 @@
         </div>
       </div>
 
+      <!-- POLICY VIEW -->
+      <div class="view" id="view-policy">
+        <div class="policy-grid">
+          <div class="card policy-card">
+            <div class="policy-icon">🏥</div>
+            <div class="policy-title">Sick Leave</div>
+            <div class="policy-detail">Up to <b>10 days</b> per year</div>
+            <div class="policy-desc">Requires a medical certificate for absences exceeding 2 consecutive days. Must be applied within 48 hours of return.</div>
+          </div>
+          <div class="card policy-card">
+            <div class="policy-icon">🌴</div>
+            <div class="policy-title">Vacation / Annual</div>
+            <div class="policy-detail">Up to <b>15 days</b> per year</div>
+            <div class="policy-desc">Must be requested at least 7 days in advance. Subject to approval based on team availability and workload.</div>
+          </div>
+          <div class="card policy-card">
+            <div class="policy-icon">👤</div>
+            <div class="policy-title">Personal Leave</div>
+            <div class="policy-detail">Up to <b>5 days</b> per year</div>
+            <div class="policy-desc">For personal matters that do not fall under other categories. Requires supervisor approval.</div>
+          </div>
+          <div class="card policy-card">
+            <div class="policy-icon">🚨</div>
+            <div class="policy-title">Emergency Leave</div>
+            <div class="policy-detail">Up to <b>3 days</b> per occurrence</div>
+            <div class="policy-desc">For unforeseen emergencies. No advance notice required, but documentation must be submitted within 3 business days.</div>
+          </div>
+          <div class="card policy-card">
+            <div class="policy-icon">📚</div>
+            <div class="policy-title">Academic / Exam</div>
+            <div class="policy-detail">Up to <b>8 days</b> per semester</div>
+            <div class="policy-desc">For exam preparation and test days. Requires proof of enrollment or examination schedule.</div>
+          </div>
+          <div class="card policy-card">
+            <div class="policy-icon">📋</div>
+            <div class="policy-title">General Rules</div>
+            <div class="policy-detail">Important <b>Guidelines</b></div>
+            <div class="policy-desc">Maximum 3 pending applications allowed. Rejected leaves do not count against annual quota. Unused vacation days expire at year-end.</div>
+          </div>
+        </div>
+      </div>
+
       <!-- APPLY VIEW -->
       <div class="view" id="view-apply">
         <div class="card" style="max-width:640px">
           <div class="card-head">
             <div><div class="card-title">New Leave Request</div><div class="card-sub">Fill in all fields carefully before submitting</div></div>
           </div>
+          <div class="policy-quick-ref">
+            <div class="policy-quick-title">Quick Policy Reference</div>
+            <div class="policy-quick-items">
+              <div class="policy-quick-item"><span class="pq-icon">🏥</span> Sick: 10 days/yr</div>
+              <div class="policy-quick-item"><span class="pq-icon">🌴</span> Vacation: 15 days/yr</div>
+              <div class="policy-quick-item"><span class="pq-icon">👤</span> Personal: 5 days/yr</div>
+              <div class="policy-quick-item"><span class="pq-icon">🚨</span> Emergency: 3 days</div>
+              <div class="policy-quick-item"><span class="pq-icon">📚</span> Academic: 8 days/sem</div>
+            </div>
+          </div>
           <div class="info-box" id="submitHint">
             Application submitted! Click <b>Check My Status</b> in the sidebar to track it.
           </div>
           <form id="leaveForm" onsubmit="submitLeave(event)">
             <div class="grid-2">
-              <div class="field"><label>Full Name</label><input type="text" id="fName" placeholder="Sara Ahmed" required></div>
-              <div class="field"><label>Your ID</label><input type="text" id="fId" placeholder="S0123" required></div>
+              <div class="field"><label>Full Name</label><input type="text" id="fName" placeholder="e.g. Sara Ahmed" required></div>
+              <div class="field"><label>Your ID</label><input type="text" id="fId" placeholder="e.g. S0123" required></div>
             </div>
             <div class="field"><label>Email Address</label><input type="email" id="fEmail" placeholder="your.email@example.com" required></div>
             <div class="field">
@@ -138,7 +208,7 @@
             <div class="field"><label>Reason / Details</label><textarea id="fReason" placeholder="Briefly explain the reason for your leave request..." required></textarea></div>
             <div class="divider"></div>
             <div style="display:flex;gap:12px">
-              <button type="submit" class="btn btn-primary">Submit Request &rarr;</button>
+              <button type="submit" class="btn btn-primary">Submit Request</button>
               <button type="button" class="btn btn-ghost" onclick="document.getElementById('leaveForm').reset()">Clear Form</button>
             </div>
           </form>
@@ -148,9 +218,9 @@
       <!-- ADMIN VIEW -->
       <div class="view" id="view-admin">
         <div class="stats-row">
-          <div class="stat-card green"><div class="stat-icon"></div><div class="stat-num" id="aStatApproved">0</div><div class="stat-label">Approved</div></div>
-          <div class="stat-card amber"><div class="stat-icon"></div><div class="stat-num" id="aStatPending">0</div><div class="stat-label">Pending</div></div>
-          <div class="stat-card red"><div class="stat-icon"></div><div class="stat-num" id="aStatRejected">0</div><div class="stat-label">Rejected</div></div>
+          <div class="stat-card green"><div class="stat-icon">A</div><div class="stat-num" id="aStatApproved">0</div><div class="stat-label">Approved</div></div>
+          <div class="stat-card amber"><div class="stat-icon">P</div><div class="stat-num" id="aStatPending">0</div><div class="stat-label">Pending</div></div>
+          <div class="stat-card red"><div class="stat-icon">R</div><div class="stat-num" id="aStatRejected">0</div><div class="stat-label">Rejected</div></div>
         </div>
         <div class="card">
           <div class="card-head">
@@ -170,22 +240,12 @@
   <div class="modal">
     <h3>Admin Login</h3>
     <div class="modal-sub">Enter admin credentials to access the management panel</div>
-
-    <!-- CREDENTIALS HINT BOX -->
-    <div style="background:#f0f9f4;border:1px solid #a5d6a7;border-radius:8px;padding:10px 14px;margin-bottom:16px;">
-      <div style="font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#7c8095;margin-bottom:6px;">Demo Credentials</div>
-      <div style="display:flex;gap:24px;font-size:13px;color:#1b5e20;">
-        <div>Username: <b style="color:#0f1117;">admin</b></div>
-        <div>Password: <b style="color:#0f1117;">admin123</b></div>
-      </div>
-    </div>
-
     <div class="field"><label>Username</label><input type="text" id="adminUser" placeholder="Username" autocomplete="off"></div>
     <div class="field"><label>Password</label><input type="password" id="adminPass" placeholder="Password"></div>
     <div class="err-text" id="adminErr">Incorrect credentials. Please try again.</div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeAdminLogin()">Cancel</button>
-      <button class="btn btn-primary" onclick="adminLogin()">Login &rarr;</button>
+      <button class="btn btn-primary" onclick="adminLogin()">Login</button>
     </div>
   </div>
 </div>
@@ -205,6 +265,6 @@
 
 <div class="toast-wrap" id="toastWrap"></div>
 
-<script src="leave.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
